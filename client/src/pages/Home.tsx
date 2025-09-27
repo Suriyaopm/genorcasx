@@ -1,9 +1,13 @@
-import Hero from '@/components/Hero';
+import { HeroGeometric } from '@/components/ui/shape-landing-hero';
 import GlassCard from '@/components/GlassCard';
+import ScrollStats from '@/components/ScrollStats';
+import FeatureShowcase from '@/components/FeatureShowcase';
 import { Button } from '@/components/ui/button';
 import { Brain, Zap, Shield, Rocket, ArrowRight, Users, Award, TrendingUp } from 'lucide-react';
+import { useTheme } from '@/hooks/use-theme';
 
 export default function Home() {
+  const { theme } = useTheme();
   const services = [
     {
       icon: <Brain className="h-8 w-8" />,
@@ -51,7 +55,16 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <Hero />
+      <HeroGeometric 
+        badge="AI Innovation"
+        title1="Next-Gen AI"
+        title2="Solutions"
+        description="Unlock the power of artificial intelligence with GenOrcasX's comprehensive suite of AI tools and enterprise solutions. Transform your business with cutting-edge technology."
+        isDark={theme === 'dark'}
+      />
+
+      {/* Stats Section */}
+      <ScrollStats />
 
       {/* Services Section */}
       <section className="py-24 bg-gradient-to-br from-background via-muted/5 to-background">
@@ -91,6 +104,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Feature Showcase */}
+      <FeatureShowcase />
 
       {/* Features Section */}
       <section className="py-24 bg-gradient-to-br from-muted/10 via-background to-muted/10">
