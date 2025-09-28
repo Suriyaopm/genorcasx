@@ -5,9 +5,11 @@ import FeatureShowcase from '@/components/FeatureShowcase';
 import { Button } from '@/components/ui/button';
 import { Brain, Zap, Shield, Rocket, ArrowRight, Users, Award, TrendingUp } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
+import { useLocation } from 'wouter';
 
 export default function Home() {
   const { theme } = useTheme();
+  const [, setLocation] = useLocation();
   const services = [
     {
       icon: <Brain className="h-8 w-8" />,
@@ -53,7 +55,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-8">
       {/* Hero Section */}
       <HeroGeometric 
         badge="AI Innovation"
@@ -97,7 +99,7 @@ export default function Home() {
           </div>
 
           <div className="text-center mt-12">
-            <Button size="lg" data-testid="button-view-all-services">
+            <Button size="lg" onClick={() => setLocation('/consulting')} data-testid="button-view-all-services">
               View All Services
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
@@ -162,10 +164,10 @@ export default function Home() {
                   Book a free consultation to discuss your AI needs and explore how we can help transform your business.
                 </p>
                 <div className="space-y-4">
-                  <Button size="lg" className="w-full" data-testid="button-book-consultation">
+                  <Button size="lg" onClick={() => setLocation('/contact')} className="w-full" data-testid="button-book-consultation">
                     Book Free Consultation
                   </Button>
-                  <Button variant="outline" size="lg" className="w-full" data-testid="button-explore-tools-cta">
+                  <Button variant="outline" size="lg" onClick={() => setLocation('/tools')} className="w-full" data-testid="button-explore-tools-cta">
                     Explore AI Tools
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>

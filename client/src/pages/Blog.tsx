@@ -5,10 +5,13 @@ import { Search } from 'lucide-react';
 import aiImage from '@assets/generated_images/AI_blog_featured_image_68fe2b91.png';
 import marketingImage from '@assets/generated_images/Marketing_blog_featured_image_88a4b838.png';
 import mvpImage from '@assets/generated_images/MVP_blog_featured_image_73ac93ec.png';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const { toast } = useToast();
 
   const blogPosts = [
     {
@@ -75,6 +78,45 @@ export default function Blog() {
     const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: newsletterEmail }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Thanks for subscribing!",
+          description: data.message || "You'll receive our latest blog posts and insights.",
+        });
+        setNewsletterEmail('');
+      } else {
+        throw new Error(data.error || 'Failed to subscribe');
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      toast({
+        title: "Subscription failed",
+        description: error.message || 'Please try again later.',
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pt-16">
@@ -151,16 +193,20 @@ export default function Blog() {
           <p className="text-lg text-muted-foreground mb-8">
             Get the latest insights on AI, product development, and digital transformation delivered to your inbox.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+          <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
             <Input
+              type="email"
               placeholder="Enter your email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
               className="bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border-glass-border dark:border-glass-dark-border"
               data-testid="input-newsletter-email"
+              required
             />
-            <button className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-elevate transition-all duration-200 whitespace-nowrap" data-testid="button-subscribe-newsletter">
+            <button type="submit" className="px-6 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover-elevate transition-all duration-200 whitespace-nowrap" data-testid="button-subscribe-newsletter">
               Subscribe
             </button>
-          </div>
+          </form>
         </div>
       </section>
     </div>

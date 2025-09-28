@@ -6,7 +6,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
   const { theme, toggleTheme } = useTheme();
 
   const navItems = [
@@ -21,7 +21,14 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border-b border-glass-border dark:border-glass-dark-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link 
+            href="/" 
+            className="flex items-center space-x-2"
+            onClick={() => {
+              // Ensure scroll to top when clicking logo
+              setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+            }}
+          >
             <img 
               src="https://www.genorcasx.com/assets/logo-BtNA-zwc.png" 
               alt="GenOrcasX" 
@@ -39,6 +46,10 @@ export default function Navigation() {
                 className={`text-sm font-medium transition-colors hover:text-primary ${
                   location === item.href ? 'text-primary' : 'text-muted-foreground'
                 }`}
+                onClick={() => {
+                  // Ensure scroll to top on navigation
+                  setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+                }}
                 data-testid={`nav-link-${item.label.toLowerCase().replace(' ', '-')}`}
               >
                 {item.label}
@@ -53,7 +64,7 @@ export default function Navigation() {
             >
               {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </Button>
-            <Button data-testid="button-get-started">Get Started</Button>
+            <Button onClick={() => setLocation('/tools')} data-testid="button-get-started">Get Started</Button>
           </div>
 
           {/* Mobile menu button */}
@@ -90,13 +101,17 @@ export default function Navigation() {
                       ? 'text-primary bg-glass-secondary dark:bg-glass-dark-secondary'
                       : 'text-muted-foreground hover:text-primary hover:bg-glass-secondary dark:hover:bg-glass-dark-secondary'
                   }`}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    // Ensure scroll to top on navigation
+                    setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'smooth' }), 100);
+                  }}
                   data-testid={`nav-link-mobile-${item.label.toLowerCase().replace(' ', '-')}`}
                 >
                   {item.label}
                 </Link>
               ))}
-              <Button className="mt-4" data-testid="button-get-started-mobile">
+              <Button onClick={() => setLocation('/tools')} className="mt-4" data-testid="button-get-started-mobile">
                 Get Started
               </Button>
             </div>

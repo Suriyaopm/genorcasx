@@ -1,8 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Play } from 'lucide-react';
 import heroBackground from '@assets/generated_images/Tech_AI_hero_background_1a577423.png';
+import { useLocation } from 'wouter';
 
 export default function Hero() {
+  const [, setLocation] = useLocation();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -32,6 +34,7 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
+              onClick={() => setLocation('/tools')}
               className="text-lg px-8 py-6 bg-primary hover:bg-primary/90"
               data-testid="button-explore-tools"
             >
@@ -42,11 +45,12 @@ export default function Hero() {
             <Button 
               variant="outline" 
               size="lg" 
+              onClick={() => setLocation('/contact')}
               className="text-lg px-8 py-6 bg-background/10 backdrop-blur-sm border-glass-border dark:border-glass-dark-border hover:bg-background/20"
               data-testid="button-watch-demo"
             >
               <Play className="mr-2 h-5 w-5" />
-              Watch Demo
+              Connect
             </Button>
           </div>
 

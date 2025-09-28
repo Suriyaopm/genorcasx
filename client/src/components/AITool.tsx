@@ -22,11 +22,11 @@ interface AIToolProps {
 
 export default function AITool({ title, description, icon, inputs, category }: AIToolProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValues, setInputValues] = useState<Record<string, string>>({});
+  const [inputValues, setInputValues] = useState<Record<string, string | File>>({});
   const [result, setResult] = useState<string>('');
   const { toast } = useToast();
 
-  const handleInputChange = (name: string, value: string) => {
+  const handleInputChange = (name: string, value: string | File) => {
     setInputValues(prev => ({ ...prev, [name]: value }));
   };
 
@@ -34,15 +34,132 @@ export default function AITool({ title, description, icon, inputs, category }: A
     console.log(`Running ${title} with inputs:`, inputValues);
     setIsLoading(true);
     
-    // TODO: Replace with actual API calls
-    setTimeout(() => {
-      setResult(`Mock result for ${title}:\n\n${JSON.stringify(inputValues, null, 2)}\n\nThis is a sample output demonstrating the tool functionality.`);
-      setIsLoading(false);
+    try {
+      let response;
+      let endpoint = '';
+      let formData;
+      
+      // Determine API endpoint and prepare data based on tool type
+      switch (title) {
+        case "Tokenization Tool":
+          endpoint = '/api/tools/tokenize';
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: inputValues.text,
+              language: inputValues.language || 'english',
+              strategy: inputValues.strategy || 'word'
+            })
+          });
+          break;
+          
+        case "Chunking Tool":
+          endpoint = '/api/tools/chunk';
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: inputValues.text,
+              chunk_size: parseInt(inputValues.chunk_size) || 1000,
+              overlap: parseInt(inputValues.overlap) || 0
+            })
+          });
+          break;
+          
+        case "AI Assistant":
+          endpoint = '/api/tools/chat';
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              groq_api_key: inputValues.groq_api_key,
+              message: inputValues.message,
+              model: inputValues.model || 'llama-3.1-8b-instant'
+            })
+          });
+          break;
+          
+        case "Embedding Tool":
+          endpoint = '/api/tools/embed';
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: inputValues.text,
+              model: inputValues.model || 'text-embedding-3-small',
+              dimensions: inputValues.dimensions ? parseInt(inputValues.dimensions) : undefined
+            })
+          });
+          break;
+          
+        case "Evaluation Tool":
+          endpoint = '/api/tools/evaluate';
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model_responses: inputValues.model_responses,
+              ground_truth: inputValues.ground_truth,
+              metrics: inputValues.metrics || 'basic'
+            })
+          });
+          break;
+          
+        case "RAG Tool":
+          endpoint = '/api/tools/rag';
+          formData = new FormData();
+          formData.append('groq_api_key', inputValues.groq_api_key);
+          formData.append('query', inputValues.query);
+          if (inputValues.openai_embed_key) {
+            formData.append('openai_embed_key', inputValues.openai_embed_key);
+          }
+          if (inputValues.file && inputValues.file instanceof File) {
+            formData.append('file', inputValues.file);
+          }
+          
+          response = await fetch(endpoint, {
+            method: 'POST',
+            body: formData
+          });
+          break;
+          
+        default:
+          throw new Error(`Unknown tool: ${title}`);
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Format the result nicely for display
+        const formattedResult = JSON.stringify(data.result, null, 2);
+        setResult(formattedResult);
+        
+        toast({
+          title: "Tool executed successfully",
+          description: `${title} has processed your request.`,
+        });
+      } else {
+        throw new Error(data.error || 'Unknown error occurred');
+      }
+      
+    } catch (error) {
+      console.error('Tool execution error:', error);
+      setResult(`Error: ${error.message}\n\nPlease check your inputs and try again.`);
+      
       toast({
-        title: "Tool executed successfully",
-        description: `${title} has finished processing your request.`,
+        title: "Error",
+        description: error.message || 'Failed to execute tool',
+        variant: "destructive"
       });
-    }, 2000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCopyResult = () => {
@@ -63,9 +180,13 @@ export default function AITool({ title, description, icon, inputs, category }: A
     URL.revokeObjectURL(url);
   };
 
-  const isFormValid = inputs.filter(input => input.required).every(input => 
-    inputValues[input.name] && inputValues[input.name].trim() !== ''
-  );
+  const isFormValid = inputs.filter(input => input.required).every(input => {
+    const value = inputValues[input.name];
+    if (input.type === 'file') {
+      return value instanceof File;
+    }
+    return value && typeof value === 'string' && value.trim() !== '';
+  });
 
   return (
     <Card className="h-full bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border-glass-border dark:border-glass-dark-border">
@@ -102,16 +223,29 @@ export default function AITool({ title, description, icon, inputs, category }: A
               {input.type === 'textarea' ? (
                 <Textarea
                   placeholder={input.placeholder}
-                  value={inputValues[input.name] || ''}
+                  value={inputValues[input.name] as string || ''}
                   onChange={(e) => handleInputChange(input.name, e.target.value)}
                   className="bg-background/50 border-glass-border dark:border-glass-dark-border"
+                  data-testid={`input-${input.name.toLowerCase().replace(/\s+/g, '-')}`}
+                />
+              ) : input.type === 'file' ? (
+                <Input
+                  type="file"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      handleInputChange(input.name, file);
+                    }
+                  }}
+                  className="bg-background/50 border-glass-border dark:border-glass-dark-border"
+                  accept=".txt,.pdf,.doc,.docx,.md"
                   data-testid={`input-${input.name.toLowerCase().replace(/\s+/g, '-')}`}
                 />
               ) : (
                 <Input
                   type={input.type}
                   placeholder={input.placeholder}
-                  value={inputValues[input.name] || ''}
+                  value={inputValues[input.name] as string || ''}
                   onChange={(e) => handleInputChange(input.name, e.target.value)}
                   className="bg-background/50 border-glass-border dark:border-glass-dark-border"
                   data-testid={`input-${input.name.toLowerCase().replace(/\s+/g, '-')}`}

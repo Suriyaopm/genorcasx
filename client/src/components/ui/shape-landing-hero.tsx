@@ -2,6 +2,7 @@
 
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { Circle } from "lucide-react";
+import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -90,6 +91,8 @@ function HeroGeometric({
     description?: string;
     isDark?: boolean;
 }) {
+    const [, setLocation] = useLocation();
+    
     const fadeUpVariants = {
         hidden: { opacity: 0, y: 30 },
         visible: (i: number) => ({
@@ -236,6 +239,7 @@ function HeroGeometric({
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            onClick={() => setLocation('/tools')}
                             className="px-8 py-4 bg-primary text-primary-foreground rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                             data-testid="button-explore-tools-hero"
                         >
@@ -245,6 +249,7 @@ function HeroGeometric({
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
+                            onClick={() => setLocation('/contact')}
                             className={cn(
                                 "px-8 py-4 rounded-lg font-medium text-lg border backdrop-blur-sm transition-all duration-300",
                                 isDark
@@ -253,7 +258,7 @@ function HeroGeometric({
                             )}
                             data-testid="button-watch-demo-hero"
                         >
-                            Watch Demo
+                            Connect
                         </motion.button>
                     </motion.div>
                 </div>

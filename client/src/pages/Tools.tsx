@@ -1,73 +1,104 @@
-import AITool from '@/components/AITool';
-import { Brain, Scissors, MessageSquare, Database, BarChart3, Zap } from 'lucide-react';
+import ToolCard from '@/components/ToolCard';
+import { Brain, Scissors, MessageSquare, Database, BarChart3, Zap, Sparkles, Target, Layers } from 'lucide-react';
+import { useLocation } from 'wouter';
 
 export default function Tools() {
+  const [, setLocation] = useLocation();
   const aiTools = [
     {
       title: "Tokenization Tool",
-      description: "Break down text into individual tokens for natural language processing tasks. Supports multiple languages and tokenization strategies.",
-      icon: <Scissors className="h-5 w-5" />,
+      description: "Break down text into individual tokens for natural language processing tasks. Advanced tokenization with multiple strategies and language support.",
+      icon: <Scissors className="h-6 w-6" />,
       category: "NLP",
-      inputs: [
-        { name: "text", type: "textarea" as const, placeholder: "Enter text to tokenize...", required: true },
-        { name: "language", type: "text" as const, placeholder: "Language (e.g., English, Spanish)", required: false },
-        { name: "strategy", type: "text" as const, placeholder: "Tokenization strategy (optional)", required: false }
+      slug: "tokenization",
+      difficulty: "Beginner" as const,
+      estimatedTime: "< 1 min",
+      features: [
+        "Multi-language support",
+        "Word & sentence tokenization", 
+        "Aggressive tokenization mode",
+        "Detailed token statistics",
+        "Character count analysis"
       ]
     },
     {
       title: "Chunking Tool",
-      description: "Split large text documents into smaller, manageable chunks with customizable size and overlap for better processing.",
-      icon: <Database className="h-5 w-5" />,
+      description: "Intelligently split large documents into optimally-sized chunks with smart word boundary detection and customizable overlap.",
+      icon: <Layers className="h-6 w-6" />,
       category: "Text Processing",
-      inputs: [
-        { name: "text", type: "textarea" as const, placeholder: "Enter text to chunk...", required: true },
-        { name: "chunk_size", type: "number" as const, placeholder: "Chunk size (e.g., 1000)", required: true },
-        { name: "overlap", type: "number" as const, placeholder: "Overlap size (e.g., 200)", required: false }
+      slug: "chunking",
+      difficulty: "Beginner" as const,
+      estimatedTime: "< 1 min",
+      features: [
+        "Smart word boundary detection",
+        "Customizable chunk size & overlap",
+        "Coverage percentage metrics",
+        "RAG-optimized chunking",
+        "Detailed chunk statistics"
       ]
     },
     {
       title: "AI Assistant",
-      description: "Chat with our AI assistant powered by Groq's advanced language models. Supports various conversation contexts and use cases.",
-      icon: <MessageSquare className="h-5 w-5" />,
+      description: "Engage with powerful AI models through Groq's lightning-fast inference. Perfect for conversations, Q&A, and content generation.",
+      icon: <MessageSquare className="h-6 w-6" />,
       category: "Chat",
-      inputs: [
-        { name: "groq_api_key", type: "text" as const, placeholder: "Your Groq API key...", required: true },
-        { name: "message", type: "textarea" as const, placeholder: "Ask me anything...", required: true },
-        { name: "model", type: "text" as const, placeholder: "Model name (optional)", required: false }
+      slug: "ai-assistant",
+      difficulty: "Intermediate" as const,
+      estimatedTime: "1-3 min",
+      features: [
+        "Groq LLaMA 3.1 integration",
+        "Lightning-fast responses",
+        "Token usage tracking",
+        "Conversation memory",
+        "Custom model selection"
       ]
     },
     {
       title: "RAG Tool",
-      description: "Retrieval-Augmented Generation for question answering over your documents. Upload files and get intelligent responses.",
-      icon: <Brain className="h-5 w-5" />,
+      description: "Advanced Retrieval-Augmented Generation with multi-format document support. Upload PDFs, Word docs, and get intelligent answers.",
+      icon: <Brain className="h-6 w-6" />,
       category: "RAG",
-      inputs: [
-        { name: "groq_api_key", type: "text" as const, placeholder: "Your Groq API key...", required: true },
-        { name: "openai_embed_key", type: "text" as const, placeholder: "OpenAI Embedding API key...", required: true },
-        { name: "file", type: "file" as const, placeholder: "Upload document...", required: true },
-        { name: "query", type: "textarea" as const, placeholder: "Ask a question about your document...", required: true }
+      slug: "rag",
+      difficulty: "Advanced" as const,
+      estimatedTime: "2-5 min",
+      features: [
+        "Multi-format file support (PDF, Word, Text)",
+        "Intelligent document chunking",
+        "Context-aware Q&A",
+        "Groq-powered responses",
+        "Document analysis metrics"
       ]
     },
     {
       title: "Evaluation Tool",
-      description: "Evaluate and compare AI model responses with comprehensive metrics including accuracy, relevance, and coherence scores.",
-      icon: <BarChart3 className="h-5 w-5" />,
+      description: "Comprehensive evaluation suite for AI model responses with advanced metrics including readability, similarity, and performance analysis.",
+      icon: <Target className="h-6 w-6" />,
       category: "Evaluation",
-      inputs: [
-        { name: "model_responses", type: "textarea" as const, placeholder: "Enter model responses to evaluate...", required: true },
-        { name: "ground_truth", type: "textarea" as const, placeholder: "Expected/reference responses (optional)", required: false },
-        { name: "metrics", type: "text" as const, placeholder: "Evaluation metrics (e.g., bleu, rouge)", required: false }
+      slug: "evaluation",
+      difficulty: "Intermediate" as const,
+      estimatedTime: "1-2 min",
+      features: [
+        "Jaccard similarity analysis",
+        "Readability scoring",
+        "Response consistency metrics",
+        "Ground truth comparison",
+        "Comprehensive reports"
       ]
     },
     {
       title: "Embedding Tool",
-      description: "Convert text into high-dimensional vector embeddings for semantic analysis, similarity search, and clustering tasks.",
-      icon: <Zap className="h-5 w-5" />,
+      description: "Generate high-dimensional vector embeddings for semantic analysis, similarity search, and advanced AI applications.",
+      icon: <Sparkles className="h-6 w-6" />,
       category: "Embeddings",
-      inputs: [
-        { name: "text", type: "textarea" as const, placeholder: "Text to embed...", required: true },
-        { name: "model", type: "text" as const, placeholder: "Embedding model (e.g., text-embedding-ada-002)", required: false },
-        { name: "dimensions", type: "number" as const, placeholder: "Output dimensions (optional)", required: false }
+      slug: "embeddings",
+      difficulty: "Advanced" as const,
+      estimatedTime: "1-2 min",
+      features: [
+        "High-dimensional vectors",
+        "Configurable dimensions",
+        "Vector magnitude analysis",
+        "Semantic representation",
+        "Clustering-ready output"
       ]
     }
   ];
@@ -101,9 +132,40 @@ export default function Tools() {
       {/* Tools Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div className="text-center p-6 rounded-2xl bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border">
+              <div className="text-2xl font-bold text-primary mb-1">6</div>
+              <div className="text-sm text-muted-foreground">AI Tools</div>
+            </div>
+            <div className="text-center p-6 rounded-2xl bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border">
+              <div className="text-2xl font-bold text-primary mb-1">1000+</div>
+              <div className="text-sm text-muted-foreground">Executions</div>
+            </div>
+            <div className="text-center p-6 rounded-2xl bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border">
+              <div className="text-2xl font-bold text-primary mb-1">99.9%</div>
+              <div className="text-sm text-muted-foreground">Uptime</div>
+            </div>
+            <div className="text-center p-6 rounded-2xl bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border">
+              <div className="text-2xl font-bold text-primary mb-1">24/7</div>
+              <div className="text-sm text-muted-foreground">Available</div>
+            </div>
+          </div>
+
+          {/* Tools Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {aiTools.map((tool, index) => (
-              <AITool key={index} {...tool} />
+              <ToolCard 
+                key={index} 
+                title={tool.title}
+                description={tool.description}
+                icon={tool.icon}
+                category={tool.category}
+                slug={tool.slug}
+                features={tool.features}
+                difficulty={tool.difficulty}
+                estimatedTime={tool.estimatedTime}
+              />
             ))}
           </div>
         </div>
@@ -119,10 +181,10 @@ export default function Tools() {
             Our tools are just the beginning. Get in touch to discuss custom AI development for your specific needs.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover-elevate transition-all duration-200" data-testid="button-contact-sales">
+            <button onClick={() => setLocation('/contact')} className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover-elevate transition-all duration-200" data-testid="button-contact-sales">
               Contact Sales
             </button>
-            <button className="px-8 py-3 bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border rounded-lg font-medium text-foreground hover-elevate transition-all duration-200" data-testid="button-view-documentation">
+            <button onClick={() => setLocation('/docs')} className="px-8 py-3 bg-glass-primary dark:bg-glass-dark-primary backdrop-blur-lg border border-glass-border dark:border-glass-dark-border rounded-lg font-medium text-foreground hover-elevate transition-all duration-200" data-testid="button-view-documentation">
               View Documentation
             </button>
           </div>

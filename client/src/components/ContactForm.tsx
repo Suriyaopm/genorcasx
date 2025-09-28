@@ -11,7 +11,7 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
+    company: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,18 +23,45 @@ export default function ContactForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
     setIsSubmitting(true);
 
-    // TODO: Replace with actual API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
-    }, 1500);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        toast({
+          title: "Message sent successfully!",
+          description: data.message || "We'll get back to you within 24 hours.",
+        });
+        
+        // Reset form
+        setFormData({ name: '', email: '', company: '', message: '' });
+      } else {
+        throw new Error(data.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: "Error sending message",
+        description: error.message || 'Failed to send message. Please try again.',
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = formData.name && formData.email && formData.message;
@@ -94,14 +121,14 @@ export default function ContactForm() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-foreground">
-                    Subject
+                    Company
                   </label>
                   <Input
-                    placeholder="What's this about?"
-                    value={formData.subject}
-                    onChange={(e) => handleInputChange('subject', e.target.value)}
+                    placeholder="Your company name (optional)"
+                    value={formData.company}
+                    onChange={(e) => handleInputChange('company', e.target.value)}
                     className="bg-background/50 border-glass-border dark:border-glass-dark-border"
-                    data-testid="input-subject"
+                    data-testid="input-company"
                   />
                 </div>
 
@@ -151,7 +178,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-medium text-foreground">Email</h4>
-                    <p className="text-muted-foreground">contact@genorcasx.com</p>
+                    <p className="text-muted-foreground">genorcasx@genorcasx.com</p>
                   </div>
                 </div>
 
@@ -161,7 +188,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h4 className="font-medium text-foreground">Phone</h4>
-                    <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                    <p className="text-muted-foreground">+91 9384157873</p>
                   </div>
                 </div>
 
@@ -172,8 +199,8 @@ export default function ContactForm() {
                   <div>
                     <h4 className="font-medium text-foreground">Office</h4>
                     <p className="text-muted-foreground">
-                      123 AI Innovation Drive<br />
-                      Tech Valley, CA 94000
+                    2/318, Singaravalan Street,<br />
+                    Chinna Neelangarai, Chennai - 600115
                     </p>
                   </div>
                 </div>

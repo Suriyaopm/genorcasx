@@ -5,76 +5,49 @@ import { ArrowRight } from 'lucide-react';
 import engineerImage from '@assets/generated_images/Male_engineer_headshot_260d43bc.png';
 import researcherImage from '@assets/generated_images/Female_AI_researcher_headshot_57e56034.png';
 import scientistImage from '@assets/generated_images/Male_data_scientist_headshot_da570fbb.png';
+import { useLocation } from 'wouter';
 
 export default function Team() {
+  const [, setLocation] = useLocation();
   const teamMembers = [
     {
-      name: "Alex Johnson",
-      role: "Senior AI Engineer",
+      name: "Bhuvan M",
+      role: "AI Engineer",
       bio: "Specializes in machine learning algorithms and neural network optimization with 8+ years of experience in developing production AI systems for Fortune 500 companies.",
       image: engineerImage,
       social: {
-        linkedin: "https://linkedin.com/in/alexjohnson",
+        linkedin: "https://linkedin.com/in/bhuvan-m-12abbb32b",
         github: "https://github.com/alexjohnson",
         twitter: "https://twitter.com/alexjohnson"
       }
     },
     {
-      name: "Sarah Chen",
-      role: "AI Research Scientist",
-      bio: "PhD in Computer Science from Stanford, focusing on natural language processing and deep learning research. Published 15+ papers in top-tier AI conferences.",
+      name: "Varsha G",
+      role: "AI Engineer",
+      bio: "B.Tech in AI from AIHT, focusing on natural language processing and deep learning research. Published 15+ papers in top-tier AI conferences.",
       image: researcherImage,
       social: {
-        linkedin: "https://linkedin.com/in/sarahchen",
+        linkedin: "https://linkedin.com/in/varsha-gopinathan-4b905b26a",
         github: "https://github.com/sarahchen"
       }
     },
     {
-      name: "Michael Rodriguez",
-      role: "Data Science Lead",
+      name: "Dinakar R",
+      role: "AI Engineer",
       bio: "Expert in data analytics, statistical modeling, and business intelligence with extensive Fortune 500 experience. Former data science lead at Google and Microsoft.",
       image: scientistImage,
       social: {
-        linkedin: "https://linkedin.com/in/michaelrodriguez",
+        linkedin: "https://linkedin.com/in/dinakar-r-797022286",
         twitter: "https://twitter.com/michaelrodriguez"
-      }
-    },
-    {
-      name: "Emily Wang",
-      role: "ML Operations Engineer",
-      bio: "Specializes in MLOps, model deployment, and infrastructure scaling. Led DevOps transformations for AI initiatives at multiple startups and enterprises.",
-      image: engineerImage,
-      social: {
-        linkedin: "https://linkedin.com/in/emilywang",
-        github: "https://github.com/emilywang"
-      }
-    },
-    {
-      name: "David Kim",
-      role: "Product Manager",
-      bio: "Product strategy expert with 6+ years experience launching AI products. Former PM at OpenAI and Anthropic, passionate about AI safety and user experience.",
-      image: scientistImage,
-      social: {
-        linkedin: "https://linkedin.com/in/davidkim",
-        twitter: "https://twitter.com/davidkim"
-      }
-    },
-    {
-      name: "Lisa Thompson",
-      role: "Business Development Director",
-      bio: "Strategic partnerships and enterprise sales specialist. Built relationships with 100+ enterprise clients and closed $50M+ in AI consulting contracts.",
-      image: researcherImage,
-      social: {
-        linkedin: "https://linkedin.com/in/lisathompson"
       }
     }
   ];
 
   const companyStats = [
-    { label: "Team Members", value: "25+" },
-    { label: "Years Combined Experience", value: "150+" },
-    { label: "AI Projects Delivered", value: "200+" },
-    { label: "Enterprise Clients", value: "50+" }
+    { label: "Team Members", value: "3" },
+    { label: "Years Combined Experience", value: "1+" },
+    { label: "AI Projects Delivered", value: "20+" },
+    { label: "Enterprise Clients", value: "2" }
   ];
 
   return (
@@ -167,11 +140,11 @@ export default function Team() {
               Explore career opportunities and help us shape the future of artificial intelligence.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" data-testid="button-view-careers">
+              <Button size="lg" onClick={() => setLocation('/careers')} data-testid="button-view-careers">
                 View Open Positions
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button variant="outline" size="lg" data-testid="button-contact-talent">
+              <Button variant="outline" size="lg" onClick={() => setLocation('/contact')} data-testid="button-contact-talent">
                 Contact Our Talent Team
               </Button>
             </div>
