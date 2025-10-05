@@ -13,7 +13,6 @@ export default function Navigation() {
     { href: '/', label: 'Home' },
     { href: '/tools', label: 'AI Tools' },
     { href: '/blog', label: 'Blog' },
-    { href: '/team', label: 'Our Team' },
     { href: '/contact', label: 'Contact' },
   ];
 
